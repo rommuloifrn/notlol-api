@@ -11,6 +11,8 @@ import com.romm.notlol_api.services.HelloService;
 import com.romm.notlol_api.services.PlayerService;
 
 
+
+
 @RestController @RequestMapping(value = "/")
 
 public class HelloController {
@@ -25,7 +27,23 @@ public class HelloController {
 
     @GetMapping("/account")
     public String account(@RequestBody PlayerDTO data) {
-        return ps.getInfo(data.gameName(), data.tagLine());
+        return ps.getPlayerPuid(data.gameName(), data.tagLine());
     }
+
+    @GetMapping("/matches")
+    public String matches(@RequestBody PlayerDTO data) {
+        String puuid = ps.getPlayerPuid(data.gameName(), data.tagLine());
+
+        return ps.getPlayerMatches(puuid).toString();
+    }
+
+    @GetMapping("/lastMatch")
+    public String lastMatch(@RequestBody PlayerDTO data) {
+        String puuid = ps.getPlayerPuid(data.gameName(), data.tagLine());
+
+        return ps.getPlayerLastMatch(ps.getPlayerMatches(puuid));
+    }
+    
+    
     
 }

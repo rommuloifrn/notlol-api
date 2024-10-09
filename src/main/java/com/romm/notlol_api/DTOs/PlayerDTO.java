@@ -1,5 +1,5 @@
 package com.romm.notlol_api.DTOs;
 
-public record PlayerDTO(String gameName, String tagLine) {
+public record PlayerDTO(String gameName, String tagLine, String puuid) {
     
 }
