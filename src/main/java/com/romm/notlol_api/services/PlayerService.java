@@ -99,6 +99,9 @@ public class PlayerService {
     }
 
     public String getMatchCreation(String matchString) {
+        // https://www.baeldung.com/jackson-object-mapper-tutorial
+        // https://www.baeldung.com/jackson-ignore-properties-on-serialization
+        // https://www.baeldung.com/jackson-deserialize-json-unknown-properties
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
             var matchObj = objectMapper.readValue(matchString, MatchDTO.class);
