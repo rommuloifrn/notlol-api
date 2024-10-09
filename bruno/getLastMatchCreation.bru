@@ -1,0 +1,18 @@
+meta {
+  name: getLastMatchCreation
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:8080/lastMatchCreation
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "gameName":"BZT rammath",
+    "tagLine": "8320"
+  }
+}

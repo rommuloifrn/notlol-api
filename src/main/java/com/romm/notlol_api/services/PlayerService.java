@@ -12,7 +12,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.romm.notlol_api.DTOs.MatchDTO;
 import com.romm.notlol_api.DTOs.PlayerDTO;
 
 @Service
@@ -93,6 +95,16 @@ public class PlayerService {
             return response.body();
         } catch (Exception e) {
             return "deu merda";
+        }
+    }
+
+    public String getMatchCreation(String matchString) {
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            var matchObj = objectMapper.readValue(matchString, MatchDTO.class);
+            return String.format("%d", matchObj.info.gameCreation);
+        } catch (Exception e) {
+            return "deu bostaaaaa" + e.getMessage();
         }
     }
 }

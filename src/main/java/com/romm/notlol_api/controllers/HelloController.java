@@ -43,6 +43,13 @@ public class HelloController {
 
         return ps.getPlayerLastMatch(ps.getPlayerMatches(puuid));
     }
+
+    @GetMapping("/lastMatchCreation")
+    public String lastMatchCreation(@RequestBody PlayerDTO data) {
+        String puuid = ps.getPlayerPuid(data.gameName(), data.tagLine());
+
+        return ps.getMatchCreation(ps.getPlayerLastMatch(ps.getPlayerMatches(puuid)));
+    }
     
     
     
