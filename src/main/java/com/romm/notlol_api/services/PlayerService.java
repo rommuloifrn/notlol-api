@@ -6,7 +6,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -109,5 +111,29 @@ public class PlayerService {
         } catch (Exception e) {
             return "deu bostaaaaa" + e.getMessage();
         }
+    }
+
+    public String getMatchCreationFormatted(String matchString) {
+        Long unixTimestamp = Long.parseLong(getMatchCreation(matchString));
+        Date date = new Date(unixTimestamp);
+
+        Instant ld = date.toInstant();
+
+        var sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+        String formattedDate = sdf.format(date);
+
+        //var ldt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+
+        var duration = Duration.between(ld, Instant.now());
+
+        var daysWithoutPlaying = duration.toDays();
+        String output;
+
+        output = "Esse merda jogou há menos de 24 horas!";
+        if (daysWithoutPlaying > 0)
+            output = String.format("Esse mano está a %d dias sem jogar.", duration.toDays());
+        
+        return output;
+
     }
 }
