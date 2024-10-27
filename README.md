@@ -16,7 +16,7 @@ then you can go to root dir and run the command:
 
 ## Goals
 
-- [ ] Return the time since the last march of a player
+- [X] Return the time since the last match of a player
 - [ ] Refactor the spaghetti code
 - [ ] Document the endpoints
 - [ ] Implement accounts with Riot RSO ...?
