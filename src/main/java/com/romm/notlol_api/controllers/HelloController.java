@@ -10,6 +10,8 @@ import com.romm.notlol_api.DTOs.PlayerDTO;
 import com.romm.notlol_api.services.HelloService;
 import com.romm.notlol_api.services.PlayerService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 
 
 
@@ -58,6 +60,7 @@ public class HelloController {
         return ps.getMatchCreationFormatted(ps.getPlayerLastMatch(ps.getPlayerMatches(puuid)));
     }
 
+    @Operation(summary = "Returns the number of days since the player's last match.")
     @GetMapping("/main")
     public String main(@RequestBody PlayerDTO data) {
         String puuid = ps.getPlayerPuid(data.gameName(), data.tagLine());
