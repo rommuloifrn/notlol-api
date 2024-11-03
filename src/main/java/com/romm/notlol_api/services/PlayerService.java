@@ -33,20 +33,11 @@ public class PlayerService {
         
         String url = accountsApiUrl+gameName.replaceAll("\\s","")+"/"+tagLine+"?api_key="+key;
 
-        HttpRequest request = HttpRequest.newBuilder().
-            uri(
-                URI.create(url)
-                ).
-            timeout(Duration.ofSeconds(10)).
-            GET().
-            build();
-    
-        HttpClient client = HttpClient.newBuilder().build();
-
         try {
-            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+            HttpResponse<String> response = (HttpResponse<String>) makeRequest(url);
             ObjectMapper objectMapper = new ObjectMapper();
             var playerObj = objectMapper.readValue(response.body(), PlayerDTO.class);
+
             return playerObj.puuid();
         } catch (Exception e) {
             return "deu merda";
@@ -56,18 +47,8 @@ public class PlayerService {
     public List getPlayerMatches(String puuid) {
         String url = matchesApiUrl1+puuid+"/ids"+"?api_key="+key;
 
-        HttpRequest request = HttpRequest.newBuilder().
-            uri(
-                URI.create(url)
-                ).
-            timeout(Duration.ofSeconds(10)).
-            GET().
-            build();
-
-        HttpClient client = HttpClient.newBuilder().build();
-
         try {
-            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+            HttpResponse<String> response = makeRequest(url);
             ObjectMapper objectMapper = new ObjectMapper();
             var matchIds = objectMapper.readValue(response.body(), List.class);
             return matchIds;
@@ -80,18 +61,8 @@ public class PlayerService {
     public String getPlayerLastMatch(List matchIds) {
         String url = matchesApiUrl2+matchIds.get(0)+"?api_key="+key;
 
-        HttpRequest request = HttpRequest.newBuilder().
-            uri(
-                URI.create(url)
-                ).
-            timeout(Duration.ofSeconds(10)).
-            GET().
-            build();
-
-        HttpClient client = HttpClient.newBuilder().build();
-
         try {
-            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+            HttpResponse<String> response = makeRequest(url);
             //ObjectMapper objectMapper = new ObjectMapper();
             //var playerObj = objectMapper.readValue(response.body(), PlayerDTO.class);
             return response.body();
@@ -113,27 +84,51 @@ public class PlayerService {
         }
     }
 
-    public String getMatchCreationFormatted(String matchString) {
+    public String getDaysSinceLastMatch(String matchString) {
         Long unixTimestamp = Long.parseLong(getMatchCreation(matchString));
-        Date date = new Date(unixTimestamp);
+        Date date = new Date(unixTimestamp); // depois tentar transformar isso em DateTime pra ser mais preciso?
 
         Instant ld = date.toInstant();
 
-        var sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-        String formattedDate = sdf.format(date);
+        var duration = Duration.between(ld, Instant.now());
 
-        //var ldt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+        var daysWithoutPlaying = duration.toDays();
+
+        return String.format("%d", daysWithoutPlaying);
+    }
+
+    public String getMatchCreationFormatted(String matchString) {
+        Long unixTimestamp = Long.parseLong(getMatchCreation(matchString));
+        Date date = new Date(unixTimestamp); // depois tentar transformar isso em DateTime pra ser mais preciso?
+
+        Instant ld = date.toInstant();
 
         var duration = Duration.between(ld, Instant.now());
 
         var daysWithoutPlaying = duration.toDays();
         String output;
 
-        output = "Esse merda jogou há menos de 24 horas!";
+        output = "Esse mano jogou há menos de 24 horas!";
         if (daysWithoutPlaying > 0)
-            output = String.format("Esse mano está a %d dias sem jogar.", duration.toDays());
+            output = String.format("Esse mano está a %d dias sem jogar. É um guerreiro inabalável.", duration.toDays());
         
         return output;
 
+    }
+
+    private HttpResponse<String> makeRequest(String url) throws Exception {
+        final int TIMEOUT_SECONDS = 10;
+
+        HttpRequest request = HttpRequest.newBuilder().
+        uri(
+            URI.create(url)
+            ).
+        timeout(Duration.ofSeconds(TIMEOUT_SECONDS)).
+        GET().
+        build();
+
+        HttpClient client = HttpClient.newBuilder().build();
+
+        return client.send(request, BodyHandlers.ofString());        
     }
 }
