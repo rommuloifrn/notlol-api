@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +23,7 @@ public class NotLolController {
     }
     
     @Operation(summary = "Returns the number of days since the player's last match.")
-    @GetMapping("/main")
+    @RequestMapping(value = "/main", method = { RequestMethod.GET, RequestMethod.POST })
     public String main(@RequestParam String gameName, @RequestParam String tagLine) {
         String puuid = ps.getPlayerPuid(gameName, tagLine);
 
